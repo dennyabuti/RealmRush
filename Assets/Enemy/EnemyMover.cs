@@ -50,7 +50,7 @@ public class EnemyMover : MonoBehaviour
 
     void ReturnToStart()
     {
-        transform.postion = path[0].transform.position;
+        transform.position = path[0].transform.position;
     }
 
 
