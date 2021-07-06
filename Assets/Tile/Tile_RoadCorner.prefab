@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2620100907368595930, guid: 6442fe843f68345658bbeb62273193eb, type: 3}
+      propertyPath: isPlaceable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2097908006222945146, guid: 6442fe843f68345658bbeb62273193eb, type: 3}
       propertyPath: m_Name
       value: Tile_RoadCorner
