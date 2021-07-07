@@ -2324,6 +2324,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2428334410380213675, guid: 3baa691d329b64d54a526e0b41ea123e, type: 3}
+      propertyPath: startCoordinates.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9094109263775642454, guid: 3baa691d329b64d54a526e0b41ea123e, type: 3}
       propertyPath: m_Name
       value: ObjectPool
