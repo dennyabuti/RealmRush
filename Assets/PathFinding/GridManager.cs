@@ -58,10 +58,20 @@ public class GridManager : MonoBehaviour
 
     public Vector3 GetPositionFromCoordinates(Vector2Int coordinates)
     {
-        Vector3 position = Vector3.zoros;
+        Vector3 position = Vector3.zero;
 
-        coordinates.x = Mathf.RoundToInt(position.x * unityGridSize);
-        coordinates.y = Mathf.RoundToInt(position.z * unityGridSize);
-        return coordinates;
+        position.x = Mathf.RoundToInt(coordinates.x * unityGridSize);
+        position.z = Mathf.RoundToInt(coordinates.y * unityGridSize);
+        return position;
+    }
+
+    public void ResetNodes()
+    {
+        foreach(KeyValuePair<Vector2Int, Node> entry in grid)
+        {
+            entry.Value.parent = null;
+            entry.Value.isExplored = false;
+            entry.Value.isPath = false;
+        }
     }
 }

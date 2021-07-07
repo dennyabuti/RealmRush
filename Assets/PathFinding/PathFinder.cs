@@ -6,7 +6,9 @@ public class PathFinder : MonoBehaviour
 {
 
     [SerializeField] Vector2Int startCoordinates;
+    public Vector2Int StartCoordinates { get { return startCoordinates; }}
     [SerializeField] Vector2Int destinationCoordinates;
+    public Vector2Int DestinationCoordinates { get { return destinationCoordinates; }}
 
     Node starNode;
     Node destinationNode;
@@ -27,15 +29,21 @@ public class PathFinder : MonoBehaviour
         if (gridManager != null)
         {
             grid = gridManager.Grid;
+            starNode = grid[startCoordinates];
+            destinationNode = grid[destinationCoordinates];
         }
 
     }
     void Start()
     {
-        starNode = gridManager.Grid[startCoordinates];
-        destinationNode = gridManager.Grid[destinationCoordinates];
+        GetNewPath();
+    }
+
+    public List<Node> GetNewPath()
+    {
+        gridManager.ResetNodes();
         BreathFirstSearch();
-        BuildPath();
+        return BuildPath();
     }
 
     void ExploreNeighbors()
@@ -65,8 +73,14 @@ public class PathFinder : MonoBehaviour
 
     void BreathFirstSearch()
     {
-        bool isRunning = true;
+        starNode.isWalkable = true;
+        destinationNode.isWalkable = true;
+        
+        frontier.Clear();
+        reached.Clear();
 
+        bool isRunning = true;
+        
         frontier.Enqueue(starNode);
         reached.Add(startCoordinates, starNode);
 
@@ -103,5 +117,21 @@ public class PathFinder : MonoBehaviour
         return path;
     }
 
+    public bool WillBlockPath(Vector2Int coordinates)
+    {
+        if(grid.ContainsKey(coordinates))
+        {
+            bool previousState = grid[coordinates].isWalkable;
+            grid[coordinates].isWalkable = false;
+            List<Node> newpath = GetNewPath();
+            grid[coordinates].isWalkable = previousState;
 
+            if (newpath.Count <= 1)
+            {
+                GetNewPath();
+                return true;
+            }
+        }
+        return false;
+    }
 }
