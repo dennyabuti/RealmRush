@@ -5,45 +5,52 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<Waypoint> path = new List<Waypoint>();
-    [SerializeField] [Range(0f, 5f)] float speed = 1f;
 
+    [SerializeField] [Range(0f, 5f)] float speed = 0.5f;
+
+    List<Node> path = new List<Node>();
     Enemy enemy;
+    GridManager gridManager;
+    PathFinder pathFinder;
     void OnEnable()
     {
-        FindPath();
         ReturnToStart();
-        StartCoroutine(FollowPath());
+        RecalculatePath(true);
     }
 
-    void Start()
+    void Awake()
     {
         enemy = GetComponent<Enemy>();
+        gridManager = FindObjectOfType<GridManager>();
+        pathFinder = FindObjectOfType<PathFinder>();
     }
 
-    void FindPath()
+    void RecalculatePath(bool resetPath)
     {
-        path.Clear();
+        Vector2Int coordinates = new Vector2Int();
 
-        GameObject parent = GameObject.FindGameObjectWithTag("Path");
-
-        foreach (Transform child in parent.transform)
+        if (resetPath)
         {
-            Waypoint waypoint = child.GetComponent<Waypoint>();
-            if (waypoint != null)
-            {
-                path.Add(waypoint);
-            }  
-            
+            coordinates = pathFinder.StartCoordinates;
         }
+        else
+        {
+            coordinates = gridManager.GetCoordinatesFromPosition(transform.position);
+        }
+
+        StopAllCoroutines();
+
+        path.Clear();
+        path = pathFinder.GetNewPath(coordinates);
+        StartCoroutine(FollowPath());
     }
 
     IEnumerator FollowPath()
     {
-        foreach (Waypoint waypoint in path)
+        for (int i = 1; i < path.Count; i++)
         {
             Vector3 startPosition = transform.position;
-            Vector3 endPosition = waypoint.transform.position;
+            Vector3 endPosition = gridManager.GetPositionFromCoordinates(path[i].coordinates);
             float travelPercent = 0f;
 
             transform.LookAt(endPosition);
@@ -69,7 +76,7 @@ public class EnemyMover : MonoBehaviour
 
     void ReturnToStart()
     {
-        transform.position = path[0].transform.position;
+        transform.position = gridManager.GetPositionFromCoordinates(pathFinder.StartCoordinates);
     }
 
 
